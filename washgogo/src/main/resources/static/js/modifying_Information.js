@@ -315,7 +315,6 @@ $fileInput.on("change", function () {
     let formData = new FormData();
     let input = $("input[name='file']");
     let file = input[0].files[0];
-    console.log("파일태그 체인지 이벤트 파일 가져오기 : " + file.name, file.size);
     if(checkExtension(file.name, file.size)){
         formData.append("file", file);
     }
@@ -348,8 +347,8 @@ function showUploadFile(profile){
     $Image.attr("data-name", profile.fileName);
     $Image.attr("data-original", profile.originalFileName);
     $Image.attr("data-directory", profile.uploadDirectory);
-    $Image.css("background-image", "url('/upload/display?path=" + profile.uploadDirectory + "/t_" + profile.fileName + "'");
-    console.log("화면에 첨부파일 뿌려주기");
+    $Image.attr("data-path", profile.uploadDirectory + "/t_" + profile.fileName);
+    //$Image.css("background-image", "url('/upload/display?path=" + profile.uploadDirectory + "/t_" + profile.fileName + "'");
 }
 /* 기본 이미지 적용 */
 $basicBtn.on("click", function () {
@@ -357,18 +356,6 @@ $basicBtn.on("click", function () {
     showBasicImage();
     modalOff();
 
-    $.ajax({
-        url: "/user/removeProfile/" + userNumber,
-        type: "delete",
-        success: function(){
-            console.log("DB 삭제 성공");
-        },
-        error: function () {
-            console.log("DB 삭제 실패");
-        }
-    });
-
-    /*
     const $deleteForm = $('<form></form>')
     $deleteForm.attr("name", "newForm");
     $deleteForm.attr("method", "post");
@@ -379,7 +366,7 @@ $basicBtn.on("click", function () {
     $deleteForm.appendTo('body');
 
     $deleteForm.submit();
-     */
+
 
 });
 function showBasicImage() {
@@ -387,9 +374,8 @@ function showBasicImage() {
 }
 /* 첨부된 파일 삭제 */
 function removeImageFile() {
-    let path = $Image.data("directory") + "/t_" + $Image.data("name");
-    pathData = {
-        path: path
+    let pathData = {
+        path: $Image.data("path")
     }
     $.ajax({
         url: "/upload/delete",

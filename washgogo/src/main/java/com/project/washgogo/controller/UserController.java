@@ -61,6 +61,8 @@ public class UserController {
     public String modifyingInformation(UserVO userVO, HttpSession session, Model model){
         long number = (long)session.getAttribute("userNumber");
         model.addAttribute("loadUserInfo", userService.loadUserInfo(number));
+        ProfileVO profileVO = userVO.getProfile();
+        model.addAttribute("profile", profileVO);
         return "/user/modifyingInformation";
     }
 
@@ -110,18 +112,16 @@ public class UserController {
         ProfileVO profileVO = userVO.getProfile();
         profileVO.setUserVO(user);
         user.setProfile(profileVO);
-        if(userService.getProfile(userNumber) != null){
-
-        }
         userService.modifyProfile(user);
         return myPage(user, session, model);
     }
 
-    @DeleteMapping("removeProfile/{userNumber}")
-    @ResponseBody
-    public String removeProfile(@PathVariable("userNumber") Long userNumber){
+    @PostMapping("removeProfile")
+    public String removeProfile(Long userNumber, HttpSession session, Model model){
         userService.removeProfile(userNumber);
-        return "프로필 사진 DB삭제 성공";
+        UserVO user = userService.loadUserInfo(userNumber);
+        model.addAttribute("profile", user.getProfile());
+        return myPage(user, session, model);
     }
 
     @PostMapping("informationRemove")

@@ -73,7 +73,7 @@ public class UploadController {
 
     @DeleteMapping("/delete")
     @ResponseBody
-    public void deleteFile(String path){
+    public void deleteFile(@PathVariable("path") String path){
         log.info("===================="+ path + "=====================" );
 
     // 썸네일 삭제
